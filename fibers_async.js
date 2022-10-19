@@ -31,9 +31,9 @@ _Fiber[Symbol.hasInstance] = function(obj) {
 };
 
 Fiber.yield = function(...args) {
-  const current = Fiber.current;
-  const _ar = current._ar;
-  const ret = _ar.runInAsyncScope(() => _Fiber.yield(...args));
+  const _ar = Fiber.current._ar;
+  const ret = _Fiber.yield(...args);
+  const _arNext = Fiber.current._ar;
   return ret;
 };
 
