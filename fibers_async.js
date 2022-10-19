@@ -36,6 +36,7 @@ Fiber.yield = function(...args) {
   const ret = _Fiber.yield(...args);
   const _arNext = Fiber.current._ar;
   const _arNext1 = executionAsyncResource();
+  Fiber.current._ar = _arNext1;
   return ret;
 };
 
