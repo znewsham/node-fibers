@@ -1,4 +1,4 @@
-const { AsyncResource } = require('async_hooks');
+const { AsyncResource, executionAsyncResource } = require('async_hooks');
 const { timeStamp } = require('console');
 const _Fiber = require('./fibers.js');
 
@@ -9,7 +9,7 @@ const Fiber = function Fiber(...args) {
   }
 
   const _private = {
-    _ar: new AsyncResource('Fiber'), 
+    _ar: new AsyncResource('Fiber'),
     _fiber: _Fiber(...args)
   };
   weakMap.set(this, _private);
@@ -30,6 +30,13 @@ _Fiber[Symbol.hasInstance] = function(obj) {
   return obj instanceof Fiber || obj.run;
 };
 
+Fiber.yield = function(...args) {
+  const current = Fiber.current;
+  const _ar = current._ar;
+  const ret = _ar.runInAsyncScope(() => _Fiber.yield(...args));
+  return ret;
+};
+
 module.exports = Fiber;
 Fiber.prototype = {
   __proto__: Fiber,
@@ -37,8 +44,9 @@ Fiber.prototype = {
     return _Fiber.current._f;
   },
 
-  yield() {
-    return _Fiber.yield(...args);
+  yield(...args) {
+    const ret = Fiber.yield(...args);
+    return ret;
   },
 
   get _ar() {
