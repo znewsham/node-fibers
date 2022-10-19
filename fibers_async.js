@@ -32,8 +32,10 @@ _Fiber[Symbol.hasInstance] = function(obj) {
 
 Fiber.yield = function(...args) {
   const _ar = Fiber.current._ar;
+  const _ar1 = executionAsyncResource();
   const ret = _Fiber.yield(...args);
   const _arNext = Fiber.current._ar;
+  const _arNext1 = executionAsyncResource();
   return ret;
 };
 
